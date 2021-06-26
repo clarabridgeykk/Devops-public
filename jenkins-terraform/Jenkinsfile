@@ -17,6 +17,8 @@ pipeline {
         string(name: 'REGION', description: 'Region to deploy')
         string(name: 'AMI', description: 'AMI ID to deploy')
         string(name: 'KEY', description: 'KEYPAIR to deploy')
+        booleanParam(name: 'DESTROY', defaultValue: false, description: 'Click to destroy')
+        booleanParam(name: 'APPLY', defaultValue: true, description: 'Click to Apply')
     }
 
     stages {
@@ -38,6 +40,11 @@ pipeline {
            }  // steps
         } //Stage  
         stage("Terraform apply") {
+            when {
+                expression {
+                        return params.APPLY == 'true'
+                    }
+                }
           steps {
               script {
               dir('terraform') {
@@ -48,5 +55,22 @@ pipeline {
             } //Script
           }  //steps
         } //Stage 
+        stage("Terraform destroy") {
+            when {
+                expression {
+                        return params.DESTROY == 'true'
+                    }
+                }
+            steps {
+                script {
+                dir('terraform') {
+                def USER_INPUT = input message: 'Please confirm to destroy', ok:'Next', parameters: [string(name: 'Destroy', defaultvalue: 'destroy', description: 'Click to destroy')]
+                env.DESTROY = USER_INPUT
+                sh "terraform ${env.DESTROY} --auto-approve"
+                  } //dir
+                } //Script
+              }  //steps
+            } //Stage 
+
     } //All stages     
 } //Pipeline

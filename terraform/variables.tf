@@ -8,12 +8,12 @@ variable "aws_region" {
 }
 
 variable "instance_count" {
-  default = "2"
+  default = "3"
 } 
 
 variable "instance_tags" {
   type = list
-  default = ["Ansible-Main", "Node-1"]
+  default = ["Ansible-Main-new", "Node-1-new", "Node-2"]
 }
 
 variable "aws_region_az" {

@@ -18,7 +18,6 @@ pipeline {
         string(name: 'AMI', description: 'AMI ID to deploy')
         string(name: 'KEY', description: 'KEYPAIR to deploy')
         booleanParam(name: 'DESTROY', defaultValue: false, description: 'Click to destroy')
-        booleanParam(name: 'APPLY', defaultValue: true, description: 'Click to Apply')
     }
 
     stages {
@@ -40,11 +39,6 @@ pipeline {
            }  // steps
         } //Stage  
         stage("Terraform apply") {
-            when {
-                expression {
-                        return params.APPLY == 'true'
-                    }
-                }
           steps {
               script {
               dir('terraform') {
